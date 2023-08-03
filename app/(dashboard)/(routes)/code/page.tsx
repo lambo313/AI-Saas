@@ -98,7 +98,7 @@ const CodePage = () => {
                           focus-visible:ring-0 
                           focus-visible:ring-transparent"
                           disabled={isLoading}
-                          placeholder="Simple toggle button using react hooks."
+                          placeholder="Simple toggle button using react hooks"
                           {...field}
                         />
                       </FormControl>
