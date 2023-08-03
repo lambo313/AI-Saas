@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 const tools = [
   {
-    label: "Coversation",
+    label: "Conversation",
     icon: MessageSquare,
     color: "text-violet-500",
     bgColor: "bg-violet-500/10",
@@ -52,7 +52,7 @@ const DashboardPage = () => {
           Explore the power of WISE
         </h2>
         <p className="text-muted-foreground font-light text-sm md:text-lg text-center">
-          Chat with the smartest AI - Expeerience the power of 
+          Experience Imagination.
         </p>
       </div>
       <div className="px-4 md:px-20 lg:px-32 space-y-4">
