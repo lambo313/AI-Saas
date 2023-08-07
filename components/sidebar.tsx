@@ -14,6 +14,7 @@ import {
   Music,
   Code,
   Settings } from "lucide-react"
+import { FreeCounter } from "./free-counter"
 
 
 
@@ -67,8 +68,15 @@ const routes = [
   }
 ]
 
+interface SidebarProps {
+  apiLimitCount: number;
+};
 
-const Sidebar = () => {
+
+const Sidebar = ({
+  apiLimitCount = 0
+
+}: SidebarProps) => {
   const pathname = usePathname();
 
   return (
@@ -103,6 +111,9 @@ const Sidebar = () => {
           ))}
         </div>
       </div>
+      <FreeCounter
+        apiLimitCount={apiLimitCount}
+      />
     </div>
   )
 }
