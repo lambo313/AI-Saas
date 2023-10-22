@@ -11,8 +11,8 @@ import { CrispProvider } from '@/components/crisp-provider'
 
 
 export const metadata: Metadata = {
-  title: 'WISE',
-  description: 'AI Platform',
+  title: 'WISE AI',
+  description: 'SaaS AI Platform',
 }
 
 export default function RootLayout({

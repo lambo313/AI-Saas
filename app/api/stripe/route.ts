@@ -44,7 +44,7 @@ export async function GET() {
                     price_data: {
                         currency: "USD",
                         product_data: {
-                            name: "WISE Pro",
+                            name: "WISE AI Pro",
                             description: "Unlimited AI Generations",
                         },
                         unit_amount: 2000,
