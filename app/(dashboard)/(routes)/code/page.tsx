@@ -16,7 +16,7 @@ import { formSchema } from "./constants";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ChatCompletionRequestMessage } from "openai";
+import { OpenAI } from "openai";
 import { Empty } from "@/components/empty";
 import { Loader } from "@/components/loader";
 import { cn } from "@/lib/utils";
@@ -31,7 +31,7 @@ const CodePage = () => {
   const proModal = useProModal();
   const router = useRouter();
 
-  const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([])
+  const [messages, setMessages] = useState<OpenAI.Chat.ChatCompletionMessageParam[]>([])
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,7 +44,7 @@ const CodePage = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
     try {
-      const userMessage: ChatCompletionRequestMessage = {
+      const userMessage: OpenAI.Chat.ChatCompletionMessageParam = {
         role: "user",
         content: values.prompt
       }
@@ -133,7 +133,7 @@ const CodePage = () => {
             <div className="flex flex-col-reverse gap-y-4">
               {messages.map((message) => (
                 <div 
-                key={message.content}
+                key={message.content?.toString()}
                 className={cn(
                   "p-8 w-full flex items-start gap-x-8 rounded-lg",
                   message.role === "user" ? "bg-white border border-black/10" : "bg-muted"
@@ -153,7 +153,7 @@ const CodePage = () => {
                     }}
                     className="text-sm overflow-hidden leading-7"
                   >
-                    {message.content || ""}
+                    {message.content?.toString() || ""}
                   </ReactMarkdown>
                 </div>
               ))}
