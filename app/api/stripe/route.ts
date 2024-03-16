@@ -1,7 +1,7 @@
 import {auth, currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
-import prismadb from "@/lib/prismadb";
+import UserSubscription from "@/models/userSubscription"; // Import the UserSubscription model
 import { stripe } from "@/lib/stripe";
 
 import { absoluteUrl } from "@/lib/utils";
@@ -17,7 +17,7 @@ export async function GET() {
             return new NextResponse("Unauthorized", {status: 401})
         }
         
-        const userSubscription = await prismadb.userSubscription.findUnique({
+        const userSubscription = await UserSubscription.findOne({
             where: {
                 userId
             }
@@ -47,7 +47,7 @@ export async function GET() {
                             name: "WISE AI Pro",
                             description: "Unlimited AI Generations",
                         },
-                        unit_amount: 2000,
+                        unit_amount: 0,
                         recurring: {
                             interval: "month"
                         }

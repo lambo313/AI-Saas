@@ -1,51 +1,47 @@
-import {auth} from "@clerk/nextjs"
-
-import prismadb from "./prismadb"
-import { MAX_FREE_COUNTS } from "@/constants"
+import { auth } from "@clerk/nextjs";
+import { MAX_FREE_COUNTS } from "@/constants";
+import UserApiLimit from "@/models/userApiLimit"; // Import the UserApiLimit model
+// import { connectToDB } from "@/lib/mongodb"; // Import the connectToDB function
 
 export const increaseApiLimit = async () => {
-    const { userId} = auth();
+    // Connect to MongoDB
+    // await connectToDB();
+
+    const { userId } = auth();
+    const id = userId
 
     if (!userId) {
         return;
     }
 
-    const userApiLimit = await prismadb.userApiLimit.findUnique({
+    try {
+        let userApiLimit = await UserApiLimit.findOne({ userId });
 
-        where: {
-            userId
+        if (userApiLimit) {
+            userApiLimit.count += 1;
+            userApiLimit.createdAt = userApiLimit.createdAt
+            await userApiLimit.save();
+        } else {
+            await UserApiLimit.create({ id, userId, count: 1 });
         }
-    });
-
-    if (userApiLimit) {
-        await prismadb.userApiLimit.update({
-            where: {userId: userId},
-            data: { count: userApiLimit.count + 1},
-        });
-    } else {
-        await prismadb.userApiLimit.create({
-            data: { userId: userId, count: 1}
-        });
+    } catch (error) {
+        console.error("Error increasing API limit:", error);
     }
 };
 
 export const checkApiLimit = async () => {
     const { userId } = auth();
 
-    if (!userId ) {
+    if (!userId) {
         return false;
     }
 
-    const userApiLimit = await prismadb.userApiLimit.findUnique({
+    try {
+        const userApiLimit = await UserApiLimit.findOne({ userId });
 
-        where: {
-            userId
-        }
-    });
-
-    if (!userApiLimit || userApiLimit.count < MAX_FREE_COUNTS) {
-        return true;
-    } else {
+        return !userApiLimit || userApiLimit.count < MAX_FREE_COUNTS;
+    } catch (error) {
+        console.error("Error checking API limit:", error);
         return false;
     }
 };
@@ -54,18 +50,15 @@ export const getApiLimitCount = async () => {
     const { userId } = auth();
 
     if (!userId) {
-        return 0
+        return 0;
     }
 
-    const userApiLimit = await prismadb.userApiLimit.findUnique({
-        where: {
-            userId
-        }
-    });
+    try {
+        const userApiLimit = await UserApiLimit.findOne({ userId });
 
-    if (!userApiLimit) {
-        return 0
+        return userApiLimit ? userApiLimit.count : 0;
+    } catch (error) {
+        console.error("Error getting API limit count:", error);
+        return 0;
     }
-
-    return userApiLimit.count;
-}
+};

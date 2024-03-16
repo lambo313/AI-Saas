@@ -1,9 +1,14 @@
 import Stripe from "stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs";
 
-import prismadb from "@/lib/prismadb";
+import UserSubscription from "@/models/userSubscription"; // Import the UserSubscription model
+
 import { stripe } from "@/lib/stripe";
+
+const { userId } = auth();
+const id = userId
 
 export async function POST(req: Request) {
     const body = await req.text();
@@ -32,8 +37,9 @@ export async function POST(req: Request) {
             return new NextResponse("User id is required", {status: 400})
         }
 
-        await prismadb.userSubscription.create({
-            data: {
+        try {
+            await UserSubscription.create({
+                id: id,
                 userId: session?.metadata?.userId,
                 stripeSubscriptionId: subscription.id,
                 stripeCustomerId: subscription.customer as string,
@@ -41,8 +47,11 @@ export async function POST(req: Request) {
                 stripeCurrentPeriodEnd: new Date(
                     subscription.current_period_end * 1000
                 ),
-            },
-        });
+            });
+        } catch (error) {
+            console.error("Error creating user subscription:", error);
+            return new NextResponse("Error creating user subscription", { status: 500 });
+        }
     }
 
     if (event.type === "invoice.payment_succeeded") {
@@ -50,18 +59,20 @@ export async function POST(req: Request) {
             session.subscription as string
         );
 
-        await prismadb.userSubscription.update({
-            where: {
+        try {
+            await UserSubscription.updateOne({
                 stripeSubscriptionId: subscription.id,
-            },
-            data: {
+            }, {
                 stripePriceId: subscription.items.data[0].price.id,
                 stripeCurrentPeriodEnd: new Date(
                     subscription.current_period_end * 1000
                 ),
-            },
-        });
+            });
+        } catch (error) {
+            console.error("Error updating user subscription:", error);
+            return new NextResponse("Error updating user subscription", { status: 500 });
+        }
     }
     
-    return new NextResponse(null, { status: 200 })
+    return new NextResponse(null, { status: 200 });
 }
