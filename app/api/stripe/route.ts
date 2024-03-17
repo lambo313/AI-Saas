@@ -50,7 +50,7 @@ export async function GET() {
                             name: "WISE AI Pro",
                             description: "Unlimited AI Generations",
                         },
-                        unit_amount: 0,
+                        unit_amount: 5,
                         recurring: {
                             interval: "month"
                         }
