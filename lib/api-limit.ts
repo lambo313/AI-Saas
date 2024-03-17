@@ -1,11 +1,11 @@
 import { auth } from "@clerk/nextjs";
 import { MAX_FREE_COUNTS } from "@/constants";
 import UserApiLimit from "@/models/userApiLimit"; // Import the UserApiLimit model
-// import { connectToDB } from "@/lib/mongodb"; // Import the connectToDB function
+import { connectToDB } from "@/lib/mongodb"; // Import the connectToDB function
 
 export const increaseApiLimit = async () => {
     // Connect to MongoDB
-    // await connectToDB();
+    await connectToDB();
 
     const { userId } = auth();
     const id = userId
