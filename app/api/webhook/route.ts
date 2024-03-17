@@ -1,19 +1,13 @@
 import Stripe from "stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { getAuth } from "@clerk/nextjs/server";
 
 import UserSubscription from "@/models/userSubscription"; // Import the UserSubscription model
 
 import { stripe } from "@/lib/stripe";
-import { NextApiRequest, NextApiResponse } from 'next';
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-    const { userId } = getAuth(req);
-    const id = userId
-
-
-    const body = await req.body();
+export async function POST(req: Request) {
+    const body = await req.text();
     const signature = headers().get("Stripe-Signature") as string;
 
     let event: Stripe.Event;
@@ -41,7 +35,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
         try {
             await UserSubscription.create({
-                id: id,
+                id: session?.metadata?.userId,
                 userId: session?.metadata?.userId,
                 stripeSubscriptionId: subscription.id,
                 stripeCustomerId: subscription.customer as string,
