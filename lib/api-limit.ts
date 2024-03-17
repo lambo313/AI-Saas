@@ -30,6 +30,9 @@ export const increaseApiLimit = async () => {
 };
 
 export const checkApiLimit = async () => {
+    // Connect to MongoDB
+    await connectToDB();
+
     const { userId } = auth();
 
     if (!userId) {
@@ -47,6 +50,9 @@ export const checkApiLimit = async () => {
 };
 
 export const getApiLimitCount = async () => {
+    // Connect to MongoDB
+    await connectToDB();
+    
     const { userId } = auth();
 
     if (!userId) {

@@ -1,5 +1,6 @@
 import {auth, currentUser } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
+import { connectToDB } from "@/lib/mongodb"; // Import the connectToDB function
 
 import UserSubscription from "@/models/userSubscription"; // Import the UserSubscription model
 import { stripe } from "@/lib/stripe";
@@ -16,6 +17,8 @@ export async function GET() {
         if (!userId || !user) {
             return new NextResponse("Unauthorized", {status: 401})
         }
+        
+        await connectToDB();
         
         const userSubscription = await UserSubscription.findOne({
             where: {

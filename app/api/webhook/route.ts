@@ -1,12 +1,14 @@
 import Stripe from "stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { connectToDB } from "@/lib/mongodb"; // Import the connectToDB function
 
 import UserSubscription from "@/models/userSubscription"; // Import the UserSubscription model
 
 import { stripe } from "@/lib/stripe";
 
 export async function POST(req: Request) {
+
     const body = await req.text();
     const signature = headers().get("Stripe-Signature") as string;
 
@@ -34,6 +36,9 @@ export async function POST(req: Request) {
         }
 
         try {
+             // Connect to MongoDB
+            await connectToDB();
+            
             await UserSubscription.create({
                 id: session?.metadata?.userId,
                 userId: session?.metadata?.userId,
