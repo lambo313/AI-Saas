@@ -11,7 +11,7 @@ const settingsUrl = absoluteUrl("/settings");
 
 export async function GET() {
     try {
-        const {userId } = auth();
+        const { userId } = await auth();
         const user = await currentUser();
 
         if (!userId || !user) {
@@ -20,11 +20,7 @@ export async function GET() {
         
         await connectToDB();
         
-        const userSubscription = await UserSubscription.findOne({
-            where: {
-                userId
-            }
-        });
+        const userSubscription = await UserSubscription.findOne({ userId });
 
         if (userSubscription && userSubscription.stripeCustomerId) {
             const stripeSession = await stripe.billingPortal.sessions.create({
@@ -50,7 +46,7 @@ export async function GET() {
                             name: "WISE AI Pro",
                             description: "Unlimited AI Generations",
                         },
-                        unit_amount: 5,
+                        unit_amount: 0,
                         recurring: {
                             interval: "month"
                         }

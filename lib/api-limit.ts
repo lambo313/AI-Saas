@@ -4,17 +4,18 @@ import UserApiLimit from "@/models/userApiLimit"; // Import the UserApiLimit mod
 import { connectToDB } from "@/lib/mongodb"; // Import the connectToDB function
 
 export const increaseApiLimit = async () => {
-    // Connect to MongoDB
-    await connectToDB();
-
-    const { userId } = auth();
+    
+    const { userId } = await auth();
     const id = userId
-
+    
     if (!userId) {
         return;
     }
-
+    
     try {
+        // Connect to MongoDB
+        await connectToDB();
+
         let userApiLimit = await UserApiLimit.findOne({ userId });
 
         if (userApiLimit) {
@@ -30,16 +31,17 @@ export const increaseApiLimit = async () => {
 };
 
 export const checkApiLimit = async () => {
-    // Connect to MongoDB
-    await connectToDB();
-
+    
     const { userId } = auth();
-
+    
     if (!userId) {
         return false;
     }
-
+    
     try {
+        // Connect to MongoDB
+        await connectToDB();
+
         const userApiLimit = await UserApiLimit.findOne({ userId });
 
         return !userApiLimit || userApiLimit.count < MAX_FREE_COUNTS;
@@ -50,16 +52,17 @@ export const checkApiLimit = async () => {
 };
 
 export const getApiLimitCount = async () => {
-    // Connect to MongoDB
-    await connectToDB();
     
     const { userId } = auth();
-
+    
     if (!userId) {
         return 0;
     }
-
+    
     try {
+        // Connect to MongoDB
+        await connectToDB();
+        
         const userApiLimit = await UserApiLimit.findOne({ userId });
 
         return userApiLimit ? userApiLimit.count : 0;

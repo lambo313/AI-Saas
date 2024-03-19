@@ -1,4 +1,4 @@
-import { Schema, model, models, SchemaTypes } from "mongoose";
+import { Schema, model, models, Document, SchemaTypes } from 'mongoose';
 
 interface IUserSubscription extends Document{
   id: string;

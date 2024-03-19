@@ -36,7 +36,7 @@ export async function POST(req: Request) {
         }
 
         try {
-             // Connect to MongoDB
+            // Connect to MongoDB
             await connectToDB();
             
             await UserSubscription.create({
@@ -61,6 +61,11 @@ export async function POST(req: Request) {
         );
 
         try {
+            // Connect to MongoDB
+            await connectToDB();
+
+            console.log("Updating Subscription Now!")
+
             await UserSubscription.updateOne({
                 stripeSubscriptionId: subscription.id,
             }, {

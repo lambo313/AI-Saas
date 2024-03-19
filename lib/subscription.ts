@@ -6,16 +6,17 @@ import { connectToDB } from "@/lib/mongodb"; // Import the connectToDB function
 const DAY_IN_MS = 86_400_000;
 
 export const checkSubscription = async () => {
-    // Connect to MongoDB
-    await connectToDB();
-
-    const { userId } = auth();
-
+    
+    const { userId } = await auth();
+    
     if (!userId) {
         return false;
     }
-
+    
     try {
+        // Connect to MongoDB
+        await connectToDB();
+        
         const userSubscription = await UserSubscription.findOne({ userId });
 
         if (!userSubscription) {
