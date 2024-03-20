@@ -37,7 +37,7 @@ const ImagePage = () => {
     defaultValues: {
       prompt: "",
       amount: "1",
-      resolution: "512x512"
+      resolution: "256x256"
     }
   });
 
@@ -50,7 +50,7 @@ const ImagePage = () => {
 
       const response = await axios.post("/api/image", values);
 
-      const urls = response.data.map((image: { url: string }) => image.url);
+      const urls = response.data.map((data: { url: string }) => data.url);
       
       setImages(urls);
       form.reset();
